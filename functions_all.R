@@ -195,7 +195,8 @@ compute_empirical_p <- function(xx, test.value){
 
 subset_dmps <- function(data, lfdr.cut=0.05){
   data %>%
-    dplyr::filter(lfdr <= lfdr.cut)
+    dplyr::filter(lfdr <= lfdr.cut) %>%
+    dplyr::filter (abs(pi.diff.mci.ctrl) >= 0.025)
 }
 
 
