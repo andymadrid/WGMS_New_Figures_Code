@@ -861,7 +861,7 @@ combine_dmps_with_intervals <- function(dmps.gr, interactions.gr){
   make_df_from_two_overlapping_granges(dmps.gr, interactions.gr) %>%
     group_by(interaction.id) %>%
     dplyr::mutate(
-      median.pi.diff = median(pi.diff),
+      median.pi.diff = median(pi.diff.mci.ctrl),
       k.dmps = n()) %>%
     ungroup()
 }
