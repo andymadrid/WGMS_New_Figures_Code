@@ -196,7 +196,7 @@ compute_empirical_p <- function(xx, test.value){
 subset_dmps <- function(data, lfdr.cut=0.05){
   data %>%
     dplyr::filter(lfdr <= lfdr.cut) %>%
-    dplyr::filter (abs(pi.diff.mci.ctrl) >= 0.025)
+    dplyr::filter (abs(pi.diff.mci.ctrl) >= DMALPHA)
 }
 
 
@@ -375,14 +375,14 @@ plot_missingness_hexbin <- function(miss.data, file){
 
 # Harmonic P-value routine ------------------------------------------------
 
-harmonic_pvalue_routine <- function(loci.gr, features.gr, alpha){
+harmonic_pvalue_routine <- function(loci.gr, features.gr, alpha, dmalpha){
   df <- make_df_from_two_overlapping_granges(loci.gr, features.gr)
 
   hmp.df <- df %>%
     group_by(gene_name) %>%
     dplyr::summarize(
       N.CpGs = n(),
-      N.DMPs = sum(lfdr < alpha),
+      N.DMPs = sum(lfdr < alpha & abs(pi.diff.mci.ctrl) > dmalpha),
       HarmonicMeanPval = harmonicmeanp::p.hmp(pval, L = N.CpGs)
     ) %>%
     dplyr::mutate(HarmonicMeanPval = pmin(HarmonicMeanPval, 1)) %>%
