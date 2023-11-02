@@ -437,8 +437,9 @@ go_output_to_df <- function(go.out){
 }
 
 
-plot_go_barchart <- function(go.df, n=25){
-
+plot_go_barchart <- function(go.df, n=25, ofile){
+  height = 7
+  width = 14
   # Get top 25 by p-value, then arrang by gene set size
   subdata <- head(dplyr::arrange(go.df, p.adjust), n) %>%
     dplyr::arrange(-p.adjust) %>%
@@ -446,7 +447,8 @@ plot_go_barchart <- function(go.df, n=25){
 
   subdata$Description <- factor(subdata$Description, levels = subdata$Description)
 
-  ggplot(data = subdata,
+  pdf(ofile,height-7,width=14)
+  p <- ggplot(data = subdata,
          aes(x = Description,
              y = Count,
              fill = Ontology)) +
@@ -462,6 +464,8 @@ plot_go_barchart <- function(go.df, n=25){
           axis.line = element_line(colour = "black"),
           plot.background = element_rect(fill = "white", color = "white")) +
     scale_fill_manual(values = c("#B24745FF", "#DF8F44FF", "#00A1D5FF"))
+  print(p)
+  dev.off()
 }
 
 
@@ -849,7 +853,10 @@ plot_enhancer_enrichment_for_dmps <- function(enrichment.result, file) {
     labs(caption = paste0("Two-sided p-value: ", pval.str)) +
     theme(plot.background = element_rect(fill = "white", color = "white"))
 
-  cowplot::save_plot(filename = file, z)
+#  cowplot::save_plot(filename = file, z)
+  pdf(file)
+    print(z)
+    dev.off()
 }
 
 
@@ -1357,8 +1364,10 @@ plot_coverage_hist_routine <- function(depth.df, cov.df, ofile){
           plot.background = element_rect(fill = "white", color = "white"))
 
 
-  cowplot::save_plot(ofile, p)
-  ofile
+ # cowplot::save_plot(ofile, p)
+  pdf(ofile)
+  print(p)
+  dev.off()
 
 }
 
