@@ -447,7 +447,7 @@ plot_go_barchart <- function(go.df, n=25, ofile){
 
   subdata$Description <- factor(subdata$Description, levels = subdata$Description)
 
-  pdf(ofile,height-7,width=14)
+  pdf(ofile,height=7,width=14)
   p <- ggplot(data = subdata,
          aes(x = Description,
              y = Count,
