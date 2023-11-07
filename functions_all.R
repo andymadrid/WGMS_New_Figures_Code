@@ -450,20 +450,22 @@ plot_go_barchart <- function(go.df, n=25, ofile){
   pdf(ofile,height=7,width=14)
   p <- ggplot(data = subdata,
          aes(x = Description,
-             y = Count,
+#             y = Count,
+             y = -log10(p.adjust),
              fill = Ontology)) +
     geom_bar(stat = "identity") +
     coord_flip() +
     theme_meAD() +
     xlab("") +
-    ylab("Number of genes") +
+#    ylab("Number of genes") +
+    ylab("-log10(FDR)") +
     labs(legend = "") +
     theme(legend.position = "top",
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
           axis.line = element_line(colour = "black"),
           plot.background = element_rect(fill = "white", color = "white")) +
-    scale_fill_manual(values = c("#B24745FF", "#DF8F44FF", "#00A1D5FF"))
+    scale_fill_manual(values = c("firebrick2", "mediumblue", "darkgoldenrod2"))
   print(p)
   dev.off()
 }
@@ -882,8 +884,9 @@ summarize_interactions_with_dmp <- function(interactions.with.dmps) {
   interactions.with.dmps %>%
     # Drop DMP related stuff
     dplyr::select(-c(chr, start, end, stat, pval, pval.Wald, y, strand,
-                     diagnostic_group_coded, pi.diff, lfdr)) %>%
-    group_by(interaction.id) %>%
+  #                   diagnostic_group_coded, pi.diff, lfdr)) %>%
+                     diagnostic_groupLOAD, pi.diff.mci.ctrl, lfdr)) %>%
+  group_by(interaction.id) %>%
     dplyr::slice(1)
 }
 
