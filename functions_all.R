@@ -295,8 +295,9 @@ get_gene_bodies <- function(upstream, downstream, autosomes_only = T, protein_co
     out <- expand_genes(genes, upstream, downstream )
   }
 
-  seqlevelsStyle(out) <- "NCBI"
-  out
+#  seqlevelsStyle(out) <- "NCBI"
+   seqlevelsStyle(out) <- "UCSC"
+ out
 }
 
 ids_to_symbols <- function(vv){
