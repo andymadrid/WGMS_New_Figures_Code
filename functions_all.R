@@ -295,8 +295,8 @@ get_gene_bodies <- function(upstream, downstream, autosomes_only = T, protein_co
     out <- expand_genes(genes, upstream, downstream )
   }
 
-#  seqlevelsStyle(out) <- "NCBI"
-   seqlevelsStyle(out) <- "UCSC"
+  seqlevelsStyle(out) <- "NCBI"
+#   seqlevelsStyle(out) <- "UCSC"
  out
 }
 
@@ -514,7 +514,8 @@ get_ucsc_seqlengths <- function(){
   good.chr <- paste0("chr", 1:22)
 
   db <- get_ensdb()
-  seqlevelsStyle(db) <- "NCBI"
+#  seqlevelsStyle(db) <- "NCBI"
+  seqlevelsStyle(db) <- "UCSC"
 
   # Usually pings to say "[some weird scaffold] didn't map"
   suppressWarnings(seqlengths(db)[good.chr])
@@ -546,7 +547,8 @@ format_and_write_ucsc_lolly <- function(data.gr, file, lfdr.cut, keep.nth=25){
                      score = round(y),
                      thickStart = start(out),
                      thickEnd = end(out),
-                     color = ifelse(pi.diff < 0, colors$hypo, colors$hyper),
+#                     color = ifelse(pi.diff < 0, colors$hypo, colors$hyper),
+                     color = ifelse(pi.diff.mci.ctrl < 0, colors$hypo, colors$hyper),
                      lollySize = ifelse(lfdr < lfdr.cut, 4, 1))
 
   mdata.cleaned$color[mdata.cleaned$lollySize == 1] <- "220,220,220"
@@ -1864,7 +1866,6 @@ plot_sankey <- function(data, N.dmps){
 
   sankey.plot <- htmlwidgets::prependContent(sankey.plot, ti)
 
-
   sankey.plot
 }
 
@@ -1978,13 +1979,14 @@ dmp_pi_chart_routine <- function(data){
 
 # Plot CpG island, shore, shelf designation -------------------------------
 
-plot_cpg_pi_chart <- function(data){
-  data %>%
+plot_cpg_pi_chart <- function(data, file){
+pdf(file)
+  z <- data %>%
     dplyr::filter(value > 0.1) %>%
     rownames_to_column("Location") %>%
     ggplot(aes(fill = Location, x = "", y = value)) +
     geom_bar(width=1, stat="identity", color="white") +
-    scale_fill_manual(name = NULL, values = pal_locuszoom()(4)) +
+    scale_fill_manual(name = NULL, values = pal_nejm()(4)) +
     coord_polar("y", start = 0) +
     theme_void() +
     theme(plot.background = element_rect(fill = "white", colour = "white"),
@@ -1993,7 +1995,9 @@ plot_cpg_pi_chart <- function(data){
           legend.position = "bottom",
           plot.margin = margin(t=5, r=5,b=5,l=5)) +
     guides(fill=guide_legend(ncol=2, reverse = F))
-
+#    guides(fill=c("firebrick3","mediumblue"))
+  print(z)
+    dev.off()
 }
 
 
@@ -2143,7 +2147,7 @@ process_and_write_dmps <- function(dmps.gr, desc, file){
       Chromosome = seqnames,
       "Start Coordinate (hg38)" = start,
       `End Coordinate (hg38)` = end,
-      `Estimated Methylation Difference (AD minus no-AD)` = pi.diff,
+      `Estimated Methylation Difference (MCI minus CU)` = pi.diff.mci.ctrl,
       `Local False-Discovery Rate (lFDR)` = lfdr)
 
   wb <- create_wb_with_description(desc)
@@ -2151,7 +2155,7 @@ process_and_write_dmps <- function(dmps.gr, desc, file){
 
   openxlsx::saveWorkbook(wb, file, overwrite = T)
 
-  return(file)
+#  return(file)
 }
 
 
