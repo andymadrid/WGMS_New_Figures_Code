@@ -1171,6 +1171,8 @@ format_and_write_ucsc_interactions <- function(interactions.for.ucsc, file){
   out.trimmed <- out[keep.ix, ]
   seqlengths(out.trimmed) <- lengths
 
+  out.trimmed <- out.trimmed[,-1]
+  
   # Write write write
   rtracklayer::export.bb(out.trimmed, file)
   file
