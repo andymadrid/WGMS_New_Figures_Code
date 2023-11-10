@@ -1948,7 +1948,7 @@ volcano_routine <- function(data){
 
 # Pi chart ----------------------------------------------------------------
 
-dmp_pi_chart_routine <- function(data){
+dmp_pi_chart_routine <- function(data, file){
   my.colors <- get_hyper_hypo_colors()
 
   # How many DMPs
@@ -1956,7 +1956,7 @@ dmp_pi_chart_routine <- function(data){
 
   # Munge
   tally.df <- data %>%
-    dplyr::mutate(direction = ifelse(pi.diff < 0, "Hypomethylation", "Hypermethylation")) %>%
+    dplyr::mutate(direction = ifelse(pi.diff.mci.ctrl < 0, "Hypomethylation", "Hypermethylation")) %>%
     group_by(direction) %>%
     summarize(prop = round(100 * n() / N)) %>%
     arrange(-prop) %>%
@@ -1972,10 +1972,13 @@ dmp_pi_chart_routine <- function(data){
           legend.text=element_text(size=16),
           legend.position = "bottom",
           plot.margin = margin(t=5, r=5,b=5,l=5)) +
-    scale_fill_manual(name=NULL, values = c(my.colors$hyper, my.colors$hypo)) +
+#    scale_fill_manual(name=NULL, values = c(my.colors$hyper, my.colors$hypo)) +
+    scale_fill_manual(name=NULL, values = c("firebrick3", "mediumblue")) +
     guides(fill=guide_legend(ncol=1))
-
-  p.pi
+  pdf(file)
+#  p.pi
+  print(p.pi)
+  dev.off()
 }
 
 
