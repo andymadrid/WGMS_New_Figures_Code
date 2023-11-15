@@ -196,7 +196,8 @@ compute_empirical_p <- function(xx, test.value){
 subset_dmps <- function(data, lfdr.cut=0.05){
   data %>%
     dplyr::filter(lfdr <= lfdr.cut) %>%
-    dplyr::filter (abs(pi.diff.mci.ctrl) >= DMALPHA)
+#    dplyr::filter (abs(pi.diff.mci.ctrl) >= DMALPHA)
+    dplyr::filter (abs(pi.diff) >= DMALPHA)
 }
 
 
@@ -383,8 +384,9 @@ harmonic_pvalue_routine <- function(loci.gr, features.gr, alpha, dmalpha){
     group_by(gene_name) %>%
     dplyr::summarize(
       N.CpGs = n(),
-      N.DMPs = sum(lfdr < alpha & abs(pi.diff.mci.ctrl) > dmalpha),
-      HarmonicMeanPval = harmonicmeanp::p.hmp(pval, L = N.CpGs)
+#      N.DMPs = sum(lfdr < alpha & abs(pi.diff.mci.ctrl) > dmalpha),
+       N.DMPs = sum(lfdr < alpha & abs(pi.diff) > dmalpha),
+     HarmonicMeanPval = harmonicmeanp::p.hmp(pval, L = N.CpGs)
     ) %>%
     dplyr::mutate(HarmonicMeanPval = pmin(HarmonicMeanPval, 1)) %>%
     dplyr::mutate(HarmonicMeanPval = pmax(HarmonicMeanPval, 0))
@@ -548,8 +550,9 @@ format_and_write_ucsc_lolly <- function(data.gr, file, lfdr.cut, keep.nth=25){
                      thickStart = start(out),
                      thickEnd = end(out),
 #                     color = ifelse(pi.diff < 0, colors$hypo, colors$hyper),
-                     color = ifelse(pi.diff.mci.ctrl < 0, colors$hypo, colors$hyper),
-                     lollySize = ifelse(lfdr < lfdr.cut, 4, 1))
+#                     color = ifelse(pi.diff.mci.ctrl < 0, colors$hypo, colors$hyper),
+                      color = ifelse(pi.diff < 0, colors$hypo, colors$hyper),
+                    lollySize = ifelse(lfdr < lfdr.cut, 4, 1))
 
   mdata.cleaned$color[mdata.cleaned$lollySize == 1] <- "220,220,220"
 
@@ -873,8 +876,9 @@ combine_dmps_with_intervals <- function(dmps.gr, interactions.gr){
   make_df_from_two_overlapping_granges(dmps.gr, interactions.gr) %>%
     group_by(interaction.id) %>%
     dplyr::mutate(
-      median.pi.diff = median(pi.diff.mci.ctrl),
-      k.dmps = n()) %>%
+#      median.pi.diff = median(pi.diff.mci.ctrl),
+       median.pi.diff = median(pi.diff),
+     k.dmps = n()) %>%
     ungroup()
 }
 
@@ -888,8 +892,9 @@ summarize_interactions_with_dmp <- function(interactions.with.dmps) {
     # Drop DMP related stuff
     dplyr::select(-c(chr, start, end, stat, pval, pval.Wald, y, strand,
   #                   diagnostic_group_coded, pi.diff, lfdr)) %>%
-                     diagnostic_groupLOAD, pi.diff.mci.ctrl, lfdr)) %>%
-  group_by(interaction.id) %>%
+#                     diagnostic_groupLOAD, pi.diff.mci.ctrl, lfdr)) %>%
+                      diagnostic_groupLOAD, pi.diff, lfdr)) %>%
+ group_by(interaction.id) %>%
     dplyr::slice(1)
 }
 
@@ -1672,6 +1677,7 @@ get_pvals_data <- function(ifile){
     dplyr::mutate(lfdr = lfdr.from.ss,
                   pval = p.from.ss,
                   pval.Wald = p.from.DSS,
+		              pi.diff = pi.diff.mci.ctrl, ##### this is what you need to change for different datasets
                   y = -log10(lfdr)) %>%
     dplyr::select(-c(p.from.ss, p.from.zz, p.from.DSS,
                      lfdr.from.ss, lfdr.from.zz))
@@ -1956,8 +1962,9 @@ dmp_pi_chart_routine <- function(data, file){
 
   # Munge
   tally.df <- data %>%
-    dplyr::mutate(direction = ifelse(pi.diff.mci.ctrl < 0, "Hypomethylation", "Hypermethylation")) %>%
-    group_by(direction) %>%
+#    dplyr::mutate(direction = ifelse(pi.diff.mci.ctrl < 0, "Hypomethylation", "Hypermethylation")) %>%
+     dplyr::mutate(direction = ifelse(pi.diff < 0, "Hypomethylation", "Hypermethylation")) %>%
+   group_by(direction) %>%
     summarize(prop = round(100 * n() / N)) %>%
     arrange(-prop) %>%
     dplyr::mutate(ypos = cumsum(prop) - 0.5*prop) %>%
@@ -2152,8 +2159,9 @@ process_and_write_dmps <- function(dmps.gr, desc, file){
       Chromosome = seqnames,
       "Start Coordinate (hg38)" = start,
       `End Coordinate (hg38)` = end,
-      `Estimated Methylation Difference (MCI minus CU)` = pi.diff.mci.ctrl,
-      `Local False-Discovery Rate (lFDR)` = lfdr)
+#      `Estimated Methylation Difference (MCI minus CU)` = pi.diff.mci.ctrl,
+       `Estimated Methylation Difference (MCI minus CU)` = pi.diff,
+     `Local False-Discovery Rate (lFDR)` = lfdr)
 
   wb <- create_wb_with_description(desc)
   wb <- append_data_to_workbook(wb, data)
