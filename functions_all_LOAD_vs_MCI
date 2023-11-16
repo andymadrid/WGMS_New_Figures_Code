@@ -942,7 +942,7 @@ summarize_interactions_with_dmp <- function(interactions.with.dmps) {
     dplyr::select(-c(chr, start, end, stat, pval, pval.Wald, y, strand,
   #                   diagnostic_group_coded, pi.diff, lfdr)) %>%
 #                     diagnostic_groupLOAD, pi.diff.mci.ctrl, lfdr)) %>%
-                      diagnostic_groupLOAD, pi.diff, lfdr)) %>%
+                      diagnostic_groupMCI, pi.diff, lfdr)) %>%
  group_by(interaction.id) %>%
     dplyr::slice(1)
 }
