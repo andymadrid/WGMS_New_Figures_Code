@@ -377,15 +377,15 @@ plot_missingness_hexbin <- function(miss.data, file){
 
 # Harmonic P-value routine ------------------------------------------------
 
-harmonic_pvalue_routine <- function(loci.gr, features.gr, alpha, dmalpha){
+harmonic_pvalue_routine <- function(loci.gr, features.gr, alpha){
   df <- make_df_from_two_overlapping_granges(loci.gr, features.gr)
 
   hmp.df <- df %>%
     group_by(gene_name) %>%
     dplyr::summarize(
       N.CpGs = n(),
-#      N.DMPs = sum(lfdr < alpha & abs(pi.diff.mci.ctrl) > dmalpha),
-       N.DMPs = sum(lfdr < alpha & abs(pi.diff) > dmalpha),
+#      N.DMPs = sum(lfdr < alpha & abs(pi.diff.mci.ctrl) > DMALPHA),
+       N.DMPs = sum(lfdr < alpha & abs(pi.diff) > DMALPHA),
      HarmonicMeanPval = harmonicmeanp::p.hmp(pval, L = N.CpGs)
     ) %>%
     dplyr::mutate(HarmonicMeanPval = pmin(HarmonicMeanPval, 1)) %>%
