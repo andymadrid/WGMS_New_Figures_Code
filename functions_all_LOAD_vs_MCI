@@ -402,6 +402,55 @@ harmonic_pvalue_routine <- function(loci.gr, features.gr, alpha, dmalpha){
   hmp.df
 }
 
+harmonic_pvalue_routine_hyper_hypo <- function(loci.gr, features.gr, alpha){
+  df <- make_df_from_two_overlapping_granges(loci.gr, features.gr)
+
+  # Hyper run
+  hmp.df <- df %>%
+    group_by(gene_name) %>%
+    dplyr::summarize(
+      N.CpGs = n(),
+      N.DMPs = sum(lfdr < alpha & pi.diff > DMALPHA),
+      HarmonicMeanPval = harmonicmeanp::p.hmp(pval, L = N.CpGs)
+    ) %>%
+    dplyr::mutate(HarmonicMeanPval = pmin(HarmonicMeanPval, 1)) %>%
+    dplyr::mutate(HarmonicMeanPval = pmax(HarmonicMeanPval, 0))
+
+  # FDR calculation
+  fdr.out <- fdrtool::fdrtool(x = hmp.df$HarmonicMeanPval, statistic = "pvalue", plot = F)
+
+  # Pack together
+  hmp.df$lfdr <- fdr.out$lfdr
+  hmp.df$qval <- fdr.out$qval
+
+  # Output
+#  hmp.df
+  hmp.df.hyper <- hmp.df
+
+  # Hypo run
+  hmp.df <- df %>%
+    group_by(gene_name) %>%
+    dplyr::summarize(
+      N.CpGs = n(),
+      N.DMPs = sum(lfdr < alpha & pi.diff < (DMALPHA*-1)),
+      HarmonicMeanPval = harmonicmeanp::p.hmp(pval, L = N.CpGs)
+    ) %>%
+    dplyr::mutate(HarmonicMeanPval = pmin(HarmonicMeanPval, 1)) %>%
+    dplyr::mutate(HarmonicMeanPval = pmax(HarmonicMeanPval, 0))
+
+  # FDR calculation
+  fdr.out <- fdrtool::fdrtool(x = hmp.df$HarmonicMeanPval, statistic = "pvalue", plot = F)
+
+  # Pack together
+  hmp.df$lfdr <- fdr.out$lfdr
+  hmp.df$qval <- fdr.out$qval
+
+  # Output
+#  hmp.df
+  hmp.df.hypo <- hmp.df
+  hmp.df <- list("hyper" = hmp.df.hyper, "hypo" = hmp.df.hypo)
+  hmp.df
+}
 
 
 # -------------------------------------------------------------------------
