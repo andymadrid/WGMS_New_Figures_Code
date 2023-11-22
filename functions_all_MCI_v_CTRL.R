@@ -620,6 +620,7 @@ liftover_wrapper <- function(gr, chain){
 
   unlist(rtracklayer::liftOver(gr, chain)) %>%
     as.data.frame()
+
 }
 
 filter_by_gene_symbols <- function(genes, inclusion.genes){
@@ -808,8 +809,10 @@ lift_promoter_capture_data_to_hg38 <- function(interactions.hg19, chain, return.
   baits.hg19 <- make_granges_with_common_field_prefix(interactions.hg19, prefix="bait")
 
   # Convert to UCSC style and liftOver
-  baits.hg38 <-liftover_wrapper(baits.hg19, chain) %>%
-    drop_granges_columns() %>%
+  baits.hg38 <-liftover_wrapper(baits.hg19, chain)
+  baits.hg38 <- baits.hg38[which(!duplicated(baits.hg38$interaction.id)==TRUE),]
+  baits.hg38$bait.id <- paste0(baits.hg38$seqnames,":",baits.hg38$start,"_",baits.hg38$end)
+	drop_granges_columns() %>%
     distinct()
 
   # Other ends
