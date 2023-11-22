@@ -815,7 +815,7 @@ lift_promoter_capture_data_to_hg38 <- function(interactions.hg19, chain, return.
   baits.hg38 <- baits.hg38 %>%
 	drop_granges_columns() %>%
     distinct()
-
+  baits.hg38 <- baits.hg38[,-which(colnames(baits.hg38)=="oe.id")]
   # Other ends
   other_ends.hg19 <- make_granges_with_common_field_prefix(interactions.hg19, prefix="oe")
 
@@ -829,7 +829,7 @@ lift_promoter_capture_data_to_hg38 <- function(interactions.hg19, chain, return.
   baits.hg38$oe.id <- other_ends.hg38$oe.id
 	other_ends.hg38 <- other_ends.hg38 %>%
 	drop_granges_columns() %>%
-    dplyr::select(c("interaction.id", "baitChr", "baitStart", "baitEnd")) %>%
+    dplyr::select(c("interaction.id", "baitChr", "baitStart", "baitEnd", "oe.id")) %>%
     distinct()
 
   # Merge
