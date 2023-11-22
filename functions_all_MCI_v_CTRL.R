@@ -826,15 +826,13 @@ lift_promoter_capture_data_to_hg38 <- function(interactions.hg19, chain, return.
   other_ends.hg38$baitChr <- other_ends.hg38$seqnames
   other_ends.hg38$baitStart <- other_ends.hg38$start
   other_ends.hg38$baitEnd <- other_ends.hg38$end
-  baits.hg38$oe.id <- other_ends.hg38$oe.id
-	other_ends.hg38 <- other_ends.hg38 %>%
-	drop_granges_columns() %>%
+  other_ends.hg38 <- other_ends.hg38 %>%
+    drop_granges_columns() %>%
     dplyr::select(c("interaction.id", "baitChr", "baitStart", "baitEnd", "oe.id")) %>%
     distinct()
 
   # Merge
   output <- dplyr::inner_join(baits.hg38, other_ends.hg38, by = "interaction.id")
-#  output <- dplyr::inner_join(other_ends.hg38, baits.hg38, by = "interaction.id")
 	
   if (nrow(output) == length(unique(output$interaction.id))){
     if (return.granges){
