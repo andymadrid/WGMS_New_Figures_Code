@@ -823,6 +823,9 @@ lift_promoter_capture_data_to_hg38 <- function(interactions.hg19, chain, return.
   other_ends.hg38 <- liftover_wrapper(other_ends.hg19, chain)
   other_ends.hg38 <- other_ends.hg38[which(!duplicated(other_ends.hg38$interaction.id)==TRUE),]
   other_ends.hg38$oe.id <- paste0(other_ends.hg38$seqnames,":",other_ends.hg38$start,"-",other_ends.hg38$end)
+  other_ends.hg38$baitChr <- other_ends.hg38$seqnames
+  other_ends.hg38$baitStart <- other_ends.hg38$start
+  other_ends.hg38$baitEnd <- other_ends.hg38$end
   other_ends.hg38 <- other_ends.hg38 %>%
 	drop_granges_columns() %>%
     dplyr::select(c("interaction.id", "baitChr", "baitStart", "baitEnd")) %>%
