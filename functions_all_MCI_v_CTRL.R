@@ -811,7 +811,8 @@ lift_promoter_capture_data_to_hg38 <- function(interactions.hg19, chain, return.
   # Convert to UCSC style and liftOver
   baits.hg38 <-liftover_wrapper(baits.hg19, chain)
   baits.hg38 <- baits.hg38[which(!duplicated(baits.hg38$interaction.id)==TRUE),]
-  baits.hg38$bait.id <- paste0(baits.hg38$seqnames,":",baits.hg38$start,"_",baits.hg38$end)
+  baits.hg38$bait.id <- paste0(baits.hg38$seqnames,":",baits.hg38$start,"-",baits.hg38$end)
+  baits.hg38 <- baits.hg38 $>$
 	drop_granges_columns() %>%
     distinct()
 
@@ -820,7 +821,10 @@ lift_promoter_capture_data_to_hg38 <- function(interactions.hg19, chain, return.
 
   # Convert to UCSC style and liftOver
   other_ends.hg38 <- liftover_wrapper(other_ends.hg19, chain) %>%
-    drop_granges_columns() %>%
+  other_ends.hg38 <- other_ends.hg38[which(!duplicated(other_ends.hg38$interaction.id)==TRUE),]
+  other_ends.hg38$oe.id <- paste0(other_ends.hg38$seqnames,":",other_ends.hg38$start,"-",other_ends.hg39$end)
+  other_ends.hg38 <- other_ends.hg38 %>%
+	drop_granges_columns() %>%
     dplyr::select(c("interaction.id", "baitChr", "baitStart", "baitEnd")) %>%
     distinct()
 
