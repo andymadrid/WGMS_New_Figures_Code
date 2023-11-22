@@ -842,6 +842,42 @@ lift_promoter_capture_data_to_hg38 <- function(interactions.hg19, chain, return.
   }
 }
 
+#lift_promoter_capture_data_to_hg38 <- function(interactions.hg19, chain, return.granges=F){
+  # Need an id to re-combine later
+#  interactions.hg19$interaction.id <- 1:nrow(interactions.hg19)
+
+  #TODO: how to reconcile differences here??
+#  baits.hg19 <- make_granges_with_common_field_prefix(interactions.hg19, prefix="bait")
+
+  # Convert to UCSC style and liftOver
+#  baits.hg38 <-liftover_wrapper(baits.hg19, chain) %>%
+#    drop_granges_columns() %>%
+#    distinct()
+
+  # Other ends
+#  other_ends.hg19 <- make_granges_with_common_field_prefix(interactions.hg19, prefix="oe")
+
+  # Convert to UCSC style and liftOver
+#  other_ends.hg38 <- liftover_wrapper(other_ends.hg19, chain) %>%
+#    drop_granges_columns() %>%
+#    dplyr::select(c("interaction.id", "baitChr", "baitStart", "baitEnd")) %>%
+#    distinct()
+
+  # Merge
+#  output <- dplyr::inner_join(baits.hg38, other_ends.hg38, by = "interaction.id")
+
+#  if (nrow(output) == length(unique(output$interaction.id))){
+#    if (return.granges){
+#      return(make_granges_with_common_field_prefix(output, prefix = "oe"))
+#    } else {
+#      return(output)
+#    }
+#  } else {
+#    warning("N row of interactions is not the same as unique interactions")
+#  }
+#}
+
+
 
 subset_overlaps_return_unique <- function(features.gr, dmps.gr){
   seqlevelsStyle(dmps.gr) <- "UCSC"
