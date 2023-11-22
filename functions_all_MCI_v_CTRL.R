@@ -836,7 +836,8 @@ lift_promoter_capture_data_to_hg38 <- function(interactions.hg19, chain, return.
 	
   if (nrow(output) == length(unique(output$interaction.id))){
     if (return.granges){
-      return(make_granges_with_common_field_prefix(output, prefix = "oe"))
+#      return(make_granges_with_common_field_prefix(output, prefix = "oe"))
+      return(make_granges_with_common_field_prefix(output, prefix = "bait"))
     } else {
       return(output)
     }
