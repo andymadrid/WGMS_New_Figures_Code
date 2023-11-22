@@ -812,7 +812,7 @@ lift_promoter_capture_data_to_hg38 <- function(interactions.hg19, chain, return.
   baits.hg38 <-liftover_wrapper(baits.hg19, chain)
   baits.hg38 <- baits.hg38[which(!duplicated(baits.hg38$interaction.id)==TRUE),]
   baits.hg38$bait.id <- paste0(baits.hg38$seqnames,":",baits.hg38$start,"-",baits.hg38$end)
-  baits.hg38 <- baits.hg38 $>$
+  baits.hg38 <- baits.hg38 %>%
 	drop_granges_columns() %>%
     distinct()
 
