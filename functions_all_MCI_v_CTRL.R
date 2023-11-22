@@ -833,11 +833,13 @@ lift_promoter_capture_data_to_hg38 <- function(interactions.hg19, chain, return.
 
   # Merge
   output <- dplyr::inner_join(baits.hg38, other_ends.hg38, by = "interaction.id")
+  output$oeChr <- output$baitChr
+  output$oeStart <- output$baitStart
+  output$oeEnd <- output$baitEnd
 	
   if (nrow(output) == length(unique(output$interaction.id))){
     if (return.granges){
-#      return(make_granges_with_common_field_prefix(output, prefix = "oe"))
-      return(make_granges_with_common_field_prefix(output, prefix = "bait"))
+      return(make_granges_with_common_field_prefix(output, prefix = "oe"))
     } else {
       return(output)
     }
