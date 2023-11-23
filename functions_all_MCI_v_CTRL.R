@@ -846,8 +846,9 @@ lift_promoter_capture_data_to_hg38 <- function(interactions.hg19, chain, return.
   bait.info <- cbind(bait.info[,1],bait.info.coords)
   colnames(bait.info) <- c("chr","start","end")	
   output$baitChr <- bait.info$chr
-  output$baitStart <- bait.info$end
+  output$baitStart <- bait.info$start
   output$baitEnd <- bait.info$end
+  output$baitChr <- gsub("chr","",output$baitChr)
 
   if (nrow(output) == length(unique(output$interaction.id))){
     if (return.granges){
