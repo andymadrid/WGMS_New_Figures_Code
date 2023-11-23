@@ -836,7 +836,17 @@ lift_promoter_capture_data_to_hg38 <- function(interactions.hg19, chain, return.
   output$oeChr <- output$baitChr
   output$oeStart <- output$baitStart
   output$oeEnd <- output$baitEnd
-	
+
+  # Change bait information
+  bait.info <- as.data.frame(output$bait.id)
+  bait.info <- as.data.frame(str_split_fixed(bait.info[,1],":",2))
+  bait.info.coords <- as.data.frame(str_split_fixed(bait.info[,2],"-",2))
+  bait.info <- cbind(bait.info[,1],bait.info.coords)
+  colnames(bait.info) <- c("chr","start","end")	
+  output$baitChr <- bait.info$chr
+  output$baitStart <- bait.info$end
+  output$baitEnd <- bait.info$end
+
   if (nrow(output) == length(unique(output$interaction.id))){
     if (return.granges){
       return(make_granges_with_common_field_prefix(output, prefix = "oe"))
