@@ -836,7 +836,9 @@ lift_promoter_capture_data_to_hg38 <- function(interactions.hg19, chain, return.
   output$oeChr <- output$baitChr
   output$oeStart <- output$baitStart
   output$oeEnd <- output$baitEnd
-
+  output$oeChr <- gsub("chr","",output$oeChr)
+  output$baitChr <- gsub("chr","",output$baitChr)
+	
   # Change bait information
   bait.info <- as.data.frame(output$bait.id)
   bait.info <- as.data.frame(str_split_fixed(bait.info[,1],":",2))
