@@ -2335,8 +2335,8 @@ format_and_write_dm_enhancers <- function(interactions.summary, de.genes, desc, 
     transmute(
       `Number of Differentially Methylated Positions (DMPs)` = k.dmps,
       `Gene Symbol` = gene.name,
-      `Promoter Locus (hg38)` = paste0(baitChr, ":", baitStart, "-", baitEnd),
-      `Enhancer Locus (hg38)` = paste0("chr", oe.id),
+      `Promoter Locus (hg38)` = paste0("chr",baitChr, ":", baitStart, "-", baitEnd),
+      `Enhancer Locus (hg38)` = paste0(oe.id),
       `Differentially Expressed` = ifelse(`Gene Symbol` %in% de.genes, "Differentially expressed", "Not differentially expressed")) %>%
     distinct() %>%
     arrange()
