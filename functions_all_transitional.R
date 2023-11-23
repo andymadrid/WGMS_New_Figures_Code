@@ -805,21 +805,46 @@ lift_promoter_capture_data_to_hg38 <- function(interactions.hg19, chain, return.
   baits.hg19 <- make_granges_with_common_field_prefix(interactions.hg19, prefix="bait")
 
   # Convert to UCSC style and liftOver
-  baits.hg38 <-liftover_wrapper(baits.hg19, chain) %>%
-    drop_granges_columns() %>%
+  baits.hg38 <-liftover_wrapper(baits.hg19, chain)
+  baits.hg38 <- baits.hg38[which(!duplicated(baits.hg38$interaction.id)==TRUE),]
+  baits.hg38$bait.id <- paste0(baits.hg38$seqnames,":",baits.hg38$start,"-",baits.hg38$end)
+  baits.hg38 <- baits.hg38 %>%
+	drop_granges_columns() %>%
     distinct()
-
+  baits.hg38 <- baits.hg38[,-which(colnames(baits.hg38)=="oe.id")]
   # Other ends
   other_ends.hg19 <- make_granges_with_common_field_prefix(interactions.hg19, prefix="oe")
 
   # Convert to UCSC style and liftOver
-  other_ends.hg38 <- liftover_wrapper(other_ends.hg19, chain) %>%
+  other_ends.hg38 <- liftover_wrapper(other_ends.hg19, chain)
+  other_ends.hg38 <- other_ends.hg38[which(!duplicated(other_ends.hg38$interaction.id)==TRUE),]
+  other_ends.hg38$oe.id <- paste0(other_ends.hg38$seqnames,":",other_ends.hg38$start,"-",other_ends.hg38$end)
+  other_ends.hg38$baitChr <- other_ends.hg38$seqnames
+  other_ends.hg38$baitStart <- other_ends.hg38$start
+  other_ends.hg38$baitEnd <- other_ends.hg38$end
+  other_ends.hg38 <- other_ends.hg38 %>%
     drop_granges_columns() %>%
-    dplyr::select(c("interaction.id", "baitChr", "baitStart", "baitEnd")) %>%
+    dplyr::select(c("interaction.id", "baitChr", "baitStart", "baitEnd", "oe.id")) %>%
     distinct()
 
   # Merge
   output <- dplyr::inner_join(baits.hg38, other_ends.hg38, by = "interaction.id")
+  output$oeChr <- output$baitChr
+  output$oeStart <- output$baitStart
+  output$oeEnd <- output$baitEnd
+  output$oeChr <- gsub("chr","",output$oeChr)
+  output$baitChr <- gsub("chr","",output$baitChr)
+	
+  # Change bait information
+  bait.info <- as.data.frame(output$bait.id)
+  bait.info <- as.data.frame(str_split_fixed(bait.info[,1],":",2))
+  bait.info.coords <- as.data.frame(str_split_fixed(bait.info[,2],"-",2))
+  bait.info <- cbind(bait.info[,1],bait.info.coords)
+  colnames(bait.info) <- c("chr","start","end")	
+  output$baitChr <- bait.info$chr
+  output$baitStart <- bait.info$start
+  output$baitEnd <- bait.info$end
+  output$baitChr <- gsub("chr","",output$baitChr)
 
   if (nrow(output) == length(unique(output$interaction.id))){
     if (return.granges){
@@ -831,6 +856,41 @@ lift_promoter_capture_data_to_hg38 <- function(interactions.hg19, chain, return.
     warning("N row of interactions is not the same as unique interactions")
   }
 }
+
+#lift_promoter_capture_data_to_hg38 <- function(interactions.hg19, chain, return.granges=F){
+#  # Need an id to re-combine later
+#  interactions.hg19$interaction.id <- 1:nrow(interactions.hg19)
+#
+#  #TODO: how to reconcile differences here??
+#  baits.hg19 <- make_granges_with_common_field_prefix(interactions.hg19, prefix="bait")
+#
+#  # Convert to UCSC style and liftOver
+#  baits.hg38 <-liftover_wrapper(baits.hg19, chain) %>%
+#    drop_granges_columns() %>%
+#    distinct()
+#
+#  # Other ends
+#  other_ends.hg19 <- make_granges_with_common_field_prefix(interactions.hg19, prefix="oe")
+#
+#  # Convert to UCSC style and liftOver
+#  other_ends.hg38 <- liftover_wrapper(other_ends.hg19, chain) %>%
+#    drop_granges_columns() %>%
+#    dplyr::select(c("interaction.id", "baitChr", "baitStart", "baitEnd")) %>%
+#    distinct()
+#
+#  # Merge
+#  output <- dplyr::inner_join(baits.hg38, other_ends.hg38, by = "interaction.id")
+#
+#  if (nrow(output) == length(unique(output$interaction.id))){
+#    if (return.granges){
+#      return(make_granges_with_common_field_prefix(output, prefix = "oe"))
+#    } else {
+#      return(output)
+#    }
+#  } else {
+#    warning("N row of interactions is not the same as unique interactions")
+#  }
+#}
 
 
 subset_overlaps_return_unique <- function(features.gr, dmps.gr){
