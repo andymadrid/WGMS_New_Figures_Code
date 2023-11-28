@@ -252,21 +252,29 @@ for (i in 1:nrow(gene.df)) {
 	if (orientation == "forwards") {
 		if (i == 1) {
 			lollipops <- lollipops +
-			geom_segment(x = gene.df[i,"start"], y = -1, xend = gene.df[i,"end"], yend = -1, color = "black", size = 0.5)
+#			geom_segment(x = gene.df[i,"start"], y = -1, xend = gene.df[i,"end"], yend = -1, color = "black", size = 0.5)
+			geom_rect(xmin = gene.df[i,"start"], ymin = -1, xmax = gene.df[i,"end"], ymax = -1, color = "black", fill = "black")
+
 		}
 		else {
 			lollipops <- lollipops +
-			geom_segment(x = gene.df[i,"start"], y = -1.5, xend = gene.df[i,"end"], yend = -0.5, color = "darkgoldenrod2", size = 0.5)
+#			geom_segment(x = gene.df[i,"start"], y = -1.5, xend = gene.df[i,"end"], yend = -0.5, color = "darkgoldenrod2", size = 0.5)
+			geom_rect(xmin = gene.df[i,"start"], ymin = -1.5, xmax = gene.df[i,"end"], ymax = -0.5, color = "darkgoldenrod2", fill = "darkgoldenrod2")
+
 		}
 	}
 	if (orientation == "backwards") {
 		if (i != nrow(gene.df)) {
 			lollipops <- lollipops +
-			geom_segment(x = gene.df[i,"start"], y = -1.5, xend = gene.df[i,"end"], yend = -0.5, color = "darkgoldenrod2", size = 0.5)
+#			geom_segment(x = gene.df[i,"start"], y = -1.5, xend = gene.df[i,"end"], yend = -0.5, color = "darkgoldenrod2", size = 0.5)
+			geom_rect(xmin = gene.df[i,"start"], ymin = -1.5, xmax = gene.df[i,"end"], ymax = -0.5, color = "darkgoldenrod2", fill = "darkgoldenrod2")
+
 		}
 		else {
 			lollipops <- lollipops +
-			geom_segment(x = gene.df[i,"start"], y = -1, xend = gene.df[i,"end"], yend = -1, color = "black", size = 0.5)
+#			geom_segment(x = gene.df[i,"start"], y = -1, xend = gene.df[i,"end"], yend = -1, color = "black", size = 0.5)
+			geom_rect(xmin = gene.df[i,"start"], ymin = -1, xmax = gene.df[i,"end"], ymax = -1, color = "black", fill = "black")
+
 		}
 	}
 }
