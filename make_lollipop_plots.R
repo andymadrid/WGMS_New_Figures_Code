@@ -7,7 +7,9 @@ library(annotatr)
 
 # get annotations
 hg38 <- annotatr::build_annotations(genome = 'hg38', annotations = 'hg38_basicgenes')
+hg38.cpgs <- annotatr::build_annotations(genome = 'hg38', annotations = 'hg38_cpgs')
 cds <- hg38[grep("exon",hg38$id)]
+cgis <- hg38.cpgs[grep("island",hg38.cpgs$id)]
 
 plotLollipops <- function(gene, transcript, pdfFile, cutoff) {
 
@@ -207,6 +209,20 @@ lollipops <- lollipops + xlab(gene.df[1,"seqnames"])
 
 # make things bigger
 lollipops <- lollipops + theme(text=element_text(size=13,color="black"))
+
+# add CpG islands (if they’re there)
+cat("Time to get tropical . . .\n")
+cgis.overlap <- as.data.frame(findOverlaps(cgis,gene.gr))
+if (nrow(cgis.overlap) > 0) {
+	cgis.sub <- as.data.frame(cgis[cgis.overlap[,1],])
+	for (i in 1:nrow(cgis.sub)) {
+		lollipops <- lollipops +
+			geom_rect(xmin = cgis.sub[i,"start"], ymin = -2, xmax = cgis.sub[i,"end"], ymax = -1.6, color = "forestgreen", fill = "forestgreen")
+	}
+}
+if (nrow(cgis.overlap) == 0) {
+	cat("\tJay kay, bro, you ain’t got any CGIs here . . .\n")
+}
 
 # find point to add in arrows for directionality
 #intronArrows <- c()
