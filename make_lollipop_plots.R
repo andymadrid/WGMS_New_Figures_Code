@@ -174,12 +174,15 @@ lolly.dmps.gr2 <-    lolly.dmps.gr2 %>%
 		shape == "circle" ~ 16,
 		shape == "square" ~ 15))
 
+# change color of lollipop sticks
+lolly.dmps.gr2$stickCol <- ifelse(lolly.dmps.gr2$score == 0, "lightgrey", "black")
+
 # plot lollipops
 yl <- expression( -log [10] (lFDR))
 if (gene.df[1,"strand"] == "+") {
 lollipops <- ggplot(lolly.dmps.gr2, aes(x = start, y = score)) +
-	geom_hline(yintercept=-1, color="black", size =1) +
-	geom_segment(x = lolly.dmps.gr2$start, y = -1, xend = lolly.dmps.gr2$start, yend = lolly.dmps.gr2$score) +
+	geom_hline(yintercept=-1, color="darkgoldenrod3", size =1) +
+	geom_segment(x = lolly.dmps.gr2$start, y = -1, xend = lolly.dmps.gr2$start, yend = lolly.dmps.gr2$score, color = lolly.dmps.gr2$stickCol) +
 	geom_point(size=lolly.dmps.gr2$cex, shape = lolly.dmps.gr2$shape2, color = lolly.dmps.gr2$color) +
 	xlim(gene.df[1,"start"]-1000, gene.df[nrow(gene.df),"end"]+1000) +
 	theme_classic() +
@@ -188,8 +191,8 @@ lollipops <- ggplot(lolly.dmps.gr2, aes(x = start, y = score)) +
 }
 if (gene.df[1,"strand"] == "-") {
 lollipops <- ggplot(lolly.dmps.gr2, aes(x = start, y = score)) +
-	geom_hline(yintercept=-1, color="black", size =1) +
-	geom_segment(x = lolly.dmps.gr2$start, y = -1, xend = lolly.dmps.gr2$start, yend = lolly.dmps.gr2$score) +
+	geom_hline(yintercept=-1, color="darkgoldenrod3", size =1) +
+	geom_segment(x = lolly.dmps.gr2$start, y = -1, xend = lolly.dmps.gr2$start, yend = lolly.dmps.gr2$score, color = lolly.dmps.gr2$stickCol) +
 	geom_point(size=lolly.dmps.gr2$cex, shape = lolly.dmps.gr2$shape2, color = lolly.dmps.gr2$color) +
 	xlim(gene.df[nrow(gene.df),"start"]-1000, gene.df[1,"end"]+1000) +
 	theme_classic() +
@@ -200,7 +203,7 @@ lollipops <- ggplot(lolly.dmps.gr2, aes(x = start, y = score)) +
 # add in exons
 for (i in 1:nrow(gene.df)) {
 	lollipops <- lollipops +
-	geom_rect(xmin = gene.df[i,"start"], ymin = -1.5, xmax = gene.df[i,"end"], ymax = -0.5, color = "darkgoldenrod2", fill = "darkgoldenrod2")
+	geom_rect(xmin = gene.df[i,"start"], ymin = -1.5, xmax = gene.df[i,"end"], ymax = -0.5, color = "darkgoldenrod3", fill = "darkgoldenrod3")
 }
 
 
@@ -225,27 +228,27 @@ if (nrow(cgis.overlap) == 0) {
 }
 
 # find point to add in arrows for directionality
-#intronArrows <- c()
-#for (i in 1:(nrow(gene.df)-1)) {
-#	intronStart <- gene.df[i,"end"]
-#	intronEnd <- gene.df[i+1,"start"]
-#	midPoint <- (intronStart+intronEnd)/2
-#	intronArrows <- rbind(intronArrows, midPoint)
-#}
+intronArrows <- c()
+for (i in 1:(nrow(gene.df)-1)) {
+	intronStart <- gene.df[i,"end"]
+	intronEnd <- gene.df[i+1,"start"]
+	midPoint <- (intronStart+intronEnd)/2
+	intronArrows <- rbind(intronArrows, midPoint)
+}
 
 # add in arrows to show directionality
-#for (i in 1:nrow(intronArrows)) {
-#	if (gene.df[1,"strand"] == "+") {
-#		lollipops <- lollipops + 
-#			geom_segment(x = intronArrows[i,1]-1, y = -1, xend = intronArrows[i,1], yend = -1,
-#			arrow = arrow(length = unit(0.5, "cm"),ends="last"))
-#	}
-#	if (gene.df[1,"strand"] == "-") {
-#		lollipops <- lollipops + 
-#			geom_segment(x = intronArrows[i,1]-1, y = -1, xend = intronArrows[i,1], yend = -1,
-#			arrow = arrow(length = unit(0.5, "cm"),ends="first"))
-#	}
-#}
+for (i in 1:nrow(intronArrows)) {
+	if (gene.df[1,"strand"] == "+") {
+		lollipops <- lollipops + 
+			geom_segment(x = intronArrows[i,1]-1, y = -1, xend = intronArrows[i,1], yend = -1,
+			arrow = arrow(length = unit(0.5, "cm"),ends="last"))
+	}
+	if (gene.df[1,"strand"] == "-") {
+		lollipops <- lollipops + 
+			geom_segment(x = intronArrows[i,1]-1, y = -1, xend = intronArrows[i,1], yend = -1,
+			arrow = arrow(length = unit(0.2, "cm"),ends="first"),color="black")
+	}
+}
 
 pdf(pdfFile, width = 12)
 print(lollipops)
