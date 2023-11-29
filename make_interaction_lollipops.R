@@ -304,8 +304,6 @@ if (orientation == "backwards") {
 # add chromosome to plot
 lollipops <- lollipops + xlab(xx[1,"chr"])
 
-# make things bigger
-lollipops <- lollipops + theme(text=element_text(size=13,color="black"))
 
 # add CpG islands (if they’re there)
 cat("Time to get tropical . . .\n")
@@ -348,8 +346,11 @@ for (i in 1:nrow(intronArrows)) {
 	}
 }
 
+# make things bigger
+lollipops <- lollipops + theme(text=element_text(size=20,color="black"))
 
-pdf(pdfFile, width = 12)
+
+pdf(pdfFile, height = 8, width = 12)
 print(lollipops)
 dev.off()
 
