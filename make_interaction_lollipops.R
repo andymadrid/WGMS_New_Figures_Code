@@ -350,7 +350,7 @@ for (i in 1:nrow(intronArrows)) {
 lollipops <- lollipops + theme(text=element_text(size=20,color="black"))
 
 
-pdf(pdfFile, height = 6, width = 12)
+pdf(pdfFile, height = 8, width = 12)
 print(lollipops)
 dev.off()
 
