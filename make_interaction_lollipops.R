@@ -21,11 +21,11 @@ library(trackViewer)
 library(dplyr)
 })
 
-# get annotations of genes and CpG islands
-hg38 <- annotatr::build_annotations(genome = 'hg38', annotations = 'hg38_basicgenes')
-hg38.cpgs <- annotatr::build_annotations(genome = 'hg38', annotations = 'hg38_cpgs')
-cds <- hg38[grep("exon",hg38$id)]
-cgis <- hg38.cpgs[grep("island",hg38.cpgs$id)]
+# get annotations of genes and CpG islands (just do this locally once instead of every time you source this code)
+#hg38 <- annotatr::build_annotations(genome = 'hg38', annotations = 'hg38_basicgenes')
+#hg38.cpgs <- annotatr::build_annotations(genome = 'hg38', annotations = 'hg38_cpgs')
+#cds <- hg38[grep("exon",hg38$id)]
+#cgis <- hg38.cpgs[grep("island",hg38.cpgs$id)]
 
 plotLollipops <- function(gene, transcript, pdfFile, cutoff, interactionFile) {
 
@@ -241,7 +241,8 @@ lolly.dmps.gr2 <-    lolly.dmps.gr2 %>%
 # plot lollipops
 yl <- expression( -log [10] (lFDR))
 lollipops <- ggplot(lolly.dmps.gr2, aes(x = start, y = score)) +
-	geom_hline(yintercept=-1, color="black", size =1) +
+#	geom_hline(yintercept=-1, color="black", size =1) +
+	geom_segment(x = gene.df2[1,"start"], y = -1, xend = gene.df2[nrow(gene.df2),"end"], yend = -1, color="darkgoldenrod3") +
 	geom_segment(x = lolly.dmps.gr2$start, y = -1, xend = lolly.dmps.gr2$start, yend = lolly.dmps.gr2$score) +
 	geom_point(size=lolly.dmps.gr2$cex, shape = lolly.dmps.gr2$shape2, color = lolly.dmps.gr2$color) +
 	xlim(gene.df2[1,"start"]-1000, gene.df2[nrow(gene.df2),"end"]+1000) +
@@ -261,7 +262,7 @@ for (i in 1:nrow(gene.df)) {
 		else {
 			lollipops <- lollipops +
 #			geom_segment(x = gene.df[i,"start"], y = -1.5, xend = gene.df[i,"end"], yend = -0.5, color = "darkgoldenrod2", size = 0.5)
-			geom_rect(xmin = gene.df[i,"start"], ymin = -1.5, xmax = gene.df[i,"end"], ymax = -0.5, color = "darkgoldenrod2", fill = "darkgoldenrod2")
+			geom_rect(xmin = gene.df[i,"start"], ymin = -1.5, xmax = gene.df[i,"end"], ymax = -0.5, color = "darkgoldenrod2", fill = "darkgoldenrod3")
 
 		}
 	}
