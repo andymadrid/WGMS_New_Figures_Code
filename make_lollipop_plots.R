@@ -212,9 +212,6 @@ for (i in 1:nrow(gene.df)) {
 # add chromosome to plot
 lollipops <- lollipops + xlab(gene.df[1,"seqnames"])
 
-# make things bigger
-lollipops <- lollipops + theme(text=element_text(size=13,color="black"))
-
 # add CpG islands (if they’re there)
 cat("Time to get tropical . . .\n")
 cgis.overlap <- as.data.frame(findOverlaps(cgis,gene.gr))
@@ -252,7 +249,10 @@ for (i in 1:nrow(intronArrows)) {
 	}
 }
 
-pdf(pdfFile, width = 12)
+# make things bigger
+lollipops <- lollipops + theme(text=element_text(size=20,color="black"))
+
+pdf(pdfFile, height = 4, width = 12)
 print(lollipops)
 dev.off()
 
