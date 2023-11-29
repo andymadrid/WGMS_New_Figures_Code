@@ -6,10 +6,10 @@ library(DMRichR)
 library(annotatr)
 
 # get annotations
-hg38 <- annotatr::build_annotations(genome = 'hg38', annotations = 'hg38_basicgenes')
-hg38.cpgs <- annotatr::build_annotations(genome = 'hg38', annotations = 'hg38_cpgs')
-cds <- hg38[grep("exon",hg38$id)]
-cgis <- hg38.cpgs[grep("island",hg38.cpgs$id)]
+#hg38 <- annotatr::build_annotations(genome = 'hg38', annotations = 'hg38_basicgenes')
+#hg38.cpgs <- annotatr::build_annotations(genome = 'hg38', annotations = 'hg38_cpgs')
+#cds <- hg38[grep("exon",hg38$id)]
+#cgis <- hg38.cpgs[grep("island",hg38.cpgs$id)]
 
 plotLollipops <- function(gene, transcript, pdfFile, cutoff) {
 
@@ -181,7 +181,8 @@ lolly.dmps.gr2$stickCol <- ifelse(lolly.dmps.gr2$score == 0, "lightgrey", "black
 yl <- expression( -log [10] (lFDR))
 if (gene.df[1,"strand"] == "+") {
 lollipops <- ggplot(lolly.dmps.gr2, aes(x = start, y = score)) +
-	geom_hline(yintercept=-1, color="darkgoldenrod3", size =1) +
+#	geom_hline(yintercept=-1, color="darkgoldenrod3", size =1) +
+	geom_segment(x = gene.df[1,"start"], y = -1, xend = gene.df[nrow(gene.df),"end"], yend = -1, color="darkgoldenrod3") +
 	geom_segment(x = lolly.dmps.gr2$start, y = -1, xend = lolly.dmps.gr2$start, yend = lolly.dmps.gr2$score, color = lolly.dmps.gr2$stickCol) +
 	geom_point(size=lolly.dmps.gr2$cex, shape = lolly.dmps.gr2$shape2, color = lolly.dmps.gr2$color) +
 	xlim(gene.df[1,"start"]-1000, gene.df[nrow(gene.df),"end"]+1000) +
@@ -191,7 +192,8 @@ lollipops <- ggplot(lolly.dmps.gr2, aes(x = start, y = score)) +
 }
 if (gene.df[1,"strand"] == "-") {
 lollipops <- ggplot(lolly.dmps.gr2, aes(x = start, y = score)) +
-	geom_hline(yintercept=-1, color="darkgoldenrod3", size =1) +
+#	geom_hline(yintercept=-1, color="darkgoldenrod3", size =1) +
+	geom_segment(x = gene.df[nrow(gene.df),"start"], y = -1, xend = gene.df[1,"end"], yend = -1, color="darkgoldenrod3") +
 	geom_segment(x = lolly.dmps.gr2$start, y = -1, xend = lolly.dmps.gr2$start, yend = lolly.dmps.gr2$score, color = lolly.dmps.gr2$stickCol) +
 	geom_point(size=lolly.dmps.gr2$cex, shape = lolly.dmps.gr2$shape2, color = lolly.dmps.gr2$color) +
 	xlim(gene.df[nrow(gene.df),"start"]-1000, gene.df[1,"end"]+1000) +
