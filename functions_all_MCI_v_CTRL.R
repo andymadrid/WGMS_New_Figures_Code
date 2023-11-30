@@ -158,15 +158,18 @@ if (var == "bmi") {
        "LOAD: " = stringify_mean_sd(xx.load),
        "Test: " = pairwise.t.test(master.df$bmi, master.df$diagnostic_group, p.adjust.method="none"))
 }
-#  list("Control: " = stringify_mean_sd(xx.control),
-#       "MCI: " = stringify_mean_sd(xx.mci),
-#       "LOAD: " = stringify_mean_sd(xx.load),
-#       "Test: " = pairwise.t.test(master.df$age_at_visit, master.df$diagnostic_group, p.adjust.method="none"))
-
-#  list("Control: " = stringify_mean_sd(xx.control),
-#       "MCI: " = stringify_mean_sd(xx.mci),
-#       "LOAD: " = stringify_mean_sd(xx.load),
-#       "Test: " = pairwise.t.test(master.df$education, master.df$diagnostic_group, p.adjust.method="none"))
+if (var == "age_at_visit") {
+  list("Control: " = stringify_mean_sd(xx.control),
+       "MCI: " = stringify_mean_sd(xx.mci),
+       "LOAD: " = stringify_mean_sd(xx.load),
+       "Test: " = pairwise.t.test(master.df$age_at_visit, master.df$diagnostic_group, p.adjust.method="none"))
+}
+if (var == "education") {
+  list("Control: " = stringify_mean_sd(xx.control),
+       "MCI: " = stringify_mean_sd(xx.mci),
+       "LOAD: " = stringify_mean_sd(xx.load),
+       "Test: " = pairwise.t.test(master.df$education, master.df$diagnostic_group, p.adjust.method="none"))
+}
 }
 # Missingness quanitifcation ----------------------------------------------
 
