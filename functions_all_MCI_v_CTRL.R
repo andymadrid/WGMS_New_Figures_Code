@@ -126,13 +126,13 @@ test_continuous <- function(master.df, var){
     dplyr::filter(diagnostic_group == "CONTROL") %>%
     dplyr::pull(var) %>% as.numeric()
 
-  xx.load <- master.df %>%
-    dplyr::filter(diagnostic_group == "LOAD") %>%
+  xx.mci <- master.df %>%
+    dplyr::filter(diagnostic_group == "MCI") %>%
     dplyr::pull(var) %>% as.numeric()
 
   list("Control: " = stringify_mean_sd(xx.control),
-       "LOAD: " = stringify_mean_sd(xx.load),
-       "Test: " = t.test(xx.control, xx.load))
+       "MCI: " = stringify_mean_sd(xx.mci),
+       "Test: " = t.test(xx.control, xx.mci))
 }
 
 
