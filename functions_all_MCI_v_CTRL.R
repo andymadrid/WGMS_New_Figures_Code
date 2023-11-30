@@ -152,12 +152,12 @@ test_continuous_three_group <- function(master.df, var){
   xx.mci <- master.df %>%
     dplyr::filter(diagnostic_group == "MCI") %>%
     dplyr::pull(var) %>% as.numeric()
-
+if (var == "bmi") {
   list("Control: " = stringify_mean_sd(xx.control),
        "MCI: " = stringify_mean_sd(xx.mci),
        "LOAD: " = stringify_mean_sd(xx.load),
        "Test: " = pairwise.t.test(master.df$bmi, master.df$diagnostic_group, p.adjust.method="none"))
-
+}
 #  list("Control: " = stringify_mean_sd(xx.control),
 #       "MCI: " = stringify_mean_sd(xx.mci),
 #       "LOAD: " = stringify_mean_sd(xx.load),
