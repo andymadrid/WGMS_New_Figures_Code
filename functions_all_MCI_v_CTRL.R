@@ -135,7 +135,46 @@ test_continuous <- function(master.df, var){
        "Test: " = t.test(xx.control, xx.mci))
 }
 
+test_continuous_three_group <- function(master.df, var){
 
+  if (!(var %in% colnames(master.df))){
+    warning("Var not in master.df")
+  }
+
+  xx.control <- master.df %>%
+    dplyr::filter(diagnostic_group == "CONTROL") %>%
+    dplyr::pull(var) %>% as.numeric()
+
+  xx.load <- master.df %>%
+    dplyr::filter(diagnostic_group == "LOAD") %>%
+    dplyr::pull(var) %>% as.numeric()
+
+  xx.mci <- master.df %>%
+    dplyr::filter(diagnostic_group == "MCI") %>%
+    dplyr::pull(var) %>% as.numeric()
+
+  if (var == "bmi") {
+  list("Control: " = stringify_mean_sd(xx.control),
+       "MCI: " = stringify_mean_sd(xx.mci),
+       "LOAD: " = stringify_mean_sd(xx.load),
+       "Test: " = pairwise.t.test(master.df$bmi, master.df$diagnostic_group, p.adjust.method="none"))
+
+  }
+  if (var == "age_at_visit") {
+  list("Control: " = stringify_mean_sd(xx.control),
+       "MCI: " = stringify_mean_sd(xx.mci),
+       "LOAD: " = stringify_mean_sd(xx.load),
+       "Test: " = pairwise.t.test(master.df$age_at_visit, master.df$diagnostic_group, p.adjust.method="none"))
+
+  }
+  if (var == "education") {
+  list("Control: " = stringify_mean_sd(xx.control),
+       "MCI: " = stringify_mean_sd(xx.mci),
+       "LOAD: " = stringify_mean_sd(xx.load),
+       "Test: " = pairwise.t.test(master.df$education, master.df$diagnostic_group, p.adjust.method="none"))
+
+  }
+}
 # Missingness quanitifcation ----------------------------------------------
 
 
