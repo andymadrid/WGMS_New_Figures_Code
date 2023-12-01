@@ -140,7 +140,9 @@ test_continuous_three_group <- function(master.df, var){
   if (!(var %in% colnames(master.df))){
     warning("Var not in master.df")
   }
-
+  if (var == "education") {
+    master.df <- master.df[na.exclude(master.df$education),]
+  }
   xx.control <- master.df %>%
     dplyr::filter(diagnostic_group == "CONTROL") %>%
     dplyr::pull(var) %>% as.numeric()
@@ -168,7 +170,7 @@ else if (var == "education") {
   list("Control: " = stringify_mean_sd(xx.control),
        "MCI: " = stringify_mean_sd(xx.mci),
        "LOAD: " = stringify_mean_sd(xx.load),
-       "Test: " = pairwise.t.test(na.rm(master.df$education), master.df$diagnostic_group, p.adjust.method="none"))
+       "Test: " = pairwise.t.test(master.df$education, master.df$diagnostic_group, p.adjust.method="none"))
 }
 }
 # Missingness quanitifcation ----------------------------------------------
