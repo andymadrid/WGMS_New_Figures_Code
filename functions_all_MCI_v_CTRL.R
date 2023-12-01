@@ -168,7 +168,7 @@ else if (var == "education") {
   list("Control: " = stringify_mean_sd(xx.control),
        "MCI: " = stringify_mean_sd(xx.mci),
        "LOAD: " = stringify_mean_sd(xx.load),
-       "Test: " = pairwise.t.test(master.df$education, master.df$diagnostic_group, p.adjust.method="none"))
+       "Test: " = pairwise.t.test(na.rm(master.df$education), master.df$diagnostic_group, p.adjust.method="none"))
 }
 }
 # Missingness quanitifcation ----------------------------------------------
