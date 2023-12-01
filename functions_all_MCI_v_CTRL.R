@@ -141,7 +141,8 @@ test_continuous_three_group <- function(master.df, var){
     warning("Var not in master.df")
   }
   if (var == "education") {
-    master.df <- master.df[na.exclude(master.df$education),]
+    master.df <- master.df %>%
+    dplyr::filter(!is.na(education))
   }
   xx.control <- master.df %>%
     dplyr::filter(diagnostic_group == "CONTROL") %>%
