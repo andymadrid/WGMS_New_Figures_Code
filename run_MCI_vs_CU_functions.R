@@ -1,4 +1,4 @@
-C.E.B. WGMS Figures (CTRL v MCI v LOAD)
+C.E.B. WGMS Figures (MCI v CTRL)
 
 # load packages
 suppressPackageStartupMessages({
@@ -17,17 +17,18 @@ library(GenomicRanges)
 })
 
 # read in functions
-source_url("https://raw.githubusercontent.com/andymadrid/WGMS_New_Figures_Code/main/functions_all_transitional.R")
+source_url("https://raw.githubusercontent.com/andymadrid/WGMS_New_Figures_Code/main/functions_all_MCI_v_CTRL.R")
 
 # set up some cutoffs
 ALPHA <- 0.05
+DMALPHA <- 0.025
 DMGENE.ALPHA <- 0.01
 
 # get nature genes (GWAS)
 natgen.symbols <- get_natgen_genes("/media/Data/WGBS/LOAD_MCI/Results/adRiskGenes.txt",exclude_APP = T,exclude_IGH = T)
 
 # read in data
-pvals.data <- get_pvals_data("/media/Data/WGBS/LOAD_MCI/Results/CONTROL_MCI_LOAD/CONTROL_MCI_LOAD/Outputs/Summaries/pvals.bed")
+pvals.data <- get_pvals_data("/media/Data/WGBS/LOAD_MCI/Results/CONTROL_MCI_LOAD/MCI_CONTROL/Outputs/Summaries/pvals.bed")
 
 # wrangle DMPs
 pvals.gr <- to_granges(pvals.data)
@@ -39,7 +40,6 @@ dmps.genic.df <- annotate_loci_to_genic_parts(dmps.gr)
 dmps.cpg.df <- cpg_annotation_routine(dmps.gr)
 plot_cpg_pi_chart(dmps.cpg.df,"/media/Data/piMCI.pdf")
 screenshot_sankey(plot_sankey(dmps.genic.df, nrow(dmps.data)),"/media/Data/dmps-genic-sankey.png")
-dmp_pi_chart_routine(dmps.data),"/media/Data/dmps-hyper-hypo-pi-chart.pdf")
 
 # check overlap with nature GWAS genes
 genes.expanded.25kb <- get_gene_bodies(upstream = 25000, downstream = 25000, autosomes_only = T,  protein_coding_only = T)
@@ -98,7 +98,7 @@ pchic.summary.stats <- tabulate_pchic_findings(
                genes.w.dm.enhancers,
                genes.w.dm.promoters
              )
-pchic.summary.stats.csv <- my_write_csv(pchic.summary.stats, "/media/Data/WGBS/LOAD_MCI/Results/CONTROL_MCI_LOAD/CONTROL_MCI_LOAD/PCHiC-integration-counts.csv")
+pchic.summary.stats.csv <- my_write_csv(pchic.summary.stats, "/media/Data/WGBS/LOAD_MCI/Results/CONTROL_MCI_LOAD/MCI_CONTROL/PCHiC-integration-counts.csv")
 
 # compare with DEGs
 autosomal.symbols <- get_autosomoal_gene_universe()
@@ -123,7 +123,7 @@ promoters.counts <- count_promoters_with_dmp(dmps.in.promoter.df)
 promoters.summary <- summarize_interactions_with_dmp(dmps.in.promoter.df)
 dm.promoters.genes.df <- summarize_dm_interaction_genes(promoters.summary)
 test.enhancer.enrichment <- test_enrichment_for_dmps(pvals.gr, dmps.gr, enhancers.to.test, B=10000)
-#test.promoter.enrichment <- test_enrichment_for_dmps(pvals.gr, dmps.gr, promoters.to.test, B=10000)
+test.promoter.enrichment <- test_enrichment_for_dmps(pvals.gr, dmps.gr, promoters.to.test, B=10000)
 
 plot.enhancer.enrichment <- plot_enhancer_enrichment_for_dmps(test.enhancer.enrichment, "/media/Data/test-enhancer-enrichment.pdf")
 
