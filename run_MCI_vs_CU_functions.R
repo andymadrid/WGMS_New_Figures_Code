@@ -1,5 +1,3 @@
-C.E.B. WGMS Figures (MCI v CTRL)
-
 # load packages
 suppressPackageStartupMessages({
 library(data.table)
